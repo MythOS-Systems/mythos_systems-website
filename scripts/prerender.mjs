@@ -55,6 +55,14 @@ const MIME = {
   '.webmanifest': 'application/manifest+json',
 };
 
+const GL_ARGS = [
+  '--use-gl=angle',
+  '--use-angle=swiftshader',
+  '--enable-unsafe-swiftshader',
+  '--ignore-gpu-blocklist',
+  '--no-sandbox',
+];
+
 function findChrome() {
   if (process.env.PRERENDER_CHROME) return process.env.PRERENDER_CHROME;
   const candidates = [
@@ -66,7 +74,38 @@ function findChrome() {
     '/usr/bin/chromium',
   ];
   for (const c of candidates) if (existsSync(c)) return c;
-  return undefined; // fall back to playwright's own chromium if installed
+  return undefined;
+}
+
+/**
+ * Resolve how to launch Chromium.
+ *  1. A real local Chrome (dev machines / PRERENDER_CHROME) — fastest, what we use locally.
+ *  2. @sparticuz/chromium — a self-contained Chromium that runs in Vercel's Linux build
+ *     container, which has no system Chrome and lacks the shared libs a normal headless
+ *     Chrome needs. This is what makes prerender actually run on Vercel.
+ *  3. playwright-core's own resolution (only works if `playwright install` ran).
+ */
+async function resolveLaunchOptions() {
+  const local = findChrome();
+  if (local) {
+    console.log(`[prerender] using local Chrome: ${local}`);
+    return { executablePath: local, args: GL_ARGS };
+  }
+  try {
+    const mod = await import('@sparticuz/chromium');
+    const sparticuz = mod.default ?? mod;
+    // Enable swiftshader-backed WebGL so the 3D components don't throw mid-render.
+    sparticuz.setGraphicsMode = true;
+    const executablePath = await sparticuz.executablePath();
+    if (executablePath) {
+      console.log(`[prerender] using @sparticuz/chromium: ${executablePath}`);
+      return { executablePath, args: [...sparticuz.args, ...GL_ARGS] };
+    }
+  } catch (err) {
+    console.error(`[prerender] @sparticuz/chromium unavailable: ${err.message}`);
+  }
+  console.log('[prerender] falling back to playwright-core default chromium');
+  return { args: GL_ARGS };
 }
 
 async function main() {
@@ -101,20 +140,13 @@ async function main() {
 
   let browser;
   try {
-    browser = await chromium.launch({
-      executablePath: findChrome(),
-      args: [
-        '--use-gl=angle',
-        '--use-angle=swiftshader',
-        '--enable-unsafe-swiftshader',
-        '--ignore-gpu-blocklist',
-        '--no-sandbox',
-      ],
-    });
+    browser = await chromium.launch(await resolveLaunchOptions());
   } catch (err) {
-    console.error('[prerender] Could not launch a browser, skipping prerender (SPA still ships):', err.message);
+    console.error('[prerender] Could not launch a browser:', err.message);
     server.close();
-    process.exit(0);
+    // Fail the build so we never silently ship an empty SPA shell with no SEO/agent
+    // content. Vercel keeps the previous (good) deployment live when a build fails.
+    process.exit(1);
   }
 
   const page = await browser.newPage();
@@ -156,7 +188,9 @@ async function main() {
   await browser.close();
   server.close();
   console.log(`[prerender] done: ${ok}/${ROUTES.length} routes prerendered.`);
-  process.exit(0);
+  // Browser launched but rendered nothing → something is broken; fail loudly rather
+  // than ship an empty shell. Partial success still ships (some content beats none).
+  process.exit(ok === 0 ? 1 : 0);
 }
 
 main();
