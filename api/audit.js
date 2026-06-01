@@ -87,7 +87,6 @@ const AI_VENDORS = ['intercom', 'ada.cx', 'drift', 'tidio', 'lyro', 'openai', 'd
 const AI_KEYWORDS = ['ai assistant', 'ai-powered chat', 'chatbot', 'ask our ai', 'virtual assistant'];
 const AR_KEYWORDS = ['try-on', 'try on', 'tryon', 'virtual try', 'augmented reality', 'ar experience', 'model-viewer', '8thwall', 'see it on you', 'visual preview', 'vto'];
 const SOCIAL = { Facebook: 'facebook.com', Instagram: 'instagram.com', 'X / Twitter': 'twitter.com', LinkedIn: 'linkedin.com', YouTube: 'youtube.com', TikTok: 'tiktok.com', Yelp: 'yelp.com', Pinterest: 'pinterest.com' };
-const CTA_WORDS = ['book now', 'book online', 'schedule', 'get a quote', 'request a quote', 'get started', 'contact us', 'call now', 'order online', 'reserve', 'make an appointment', 'sign up', 'buy now', 'shop now'];
 
 /* ----------------------------------------------------- JSON-LD extraction */
 
@@ -157,6 +156,110 @@ async function runPsi(url) {
   }
 }
 
+// Action words we look for in actual clickable elements (links/buttons), not
+// raw page text. Counting elements (not distinct phrases) means a site that
+// repeats "Book Now" in every section scores as having many CTAs.
+const CTA_TEXTS = ['book', 'schedule', 'appointment', 'reserve', 'reservation', 'quote', 'get started', 'get a quote', 'sign up', 'signup', 'subscribe', 'contact', 'call', 'order', 'buy', 'shop', 'apply', 'join', 'get in touch', 'request', 'menu', 'enroll', 'register', 'free trial', 'donate', 'checkout', 'learn more'];
+
+function countCtas($) {
+  let n = 0;
+  $('a, button, input[type="submit"], input[type="button"], [role="button"]').each((_, el) => {
+    const e = $(el);
+    const t = `${e.text() || ''} ${e.attr('value') || ''} ${e.attr('aria-label') || ''} ${e.attr('title') || ''}`.toLowerCase();
+    if (CTA_TEXTS.some((w) => t.includes(w))) n += 1;
+  });
+  return n;
+}
+
+// Per-page signals that can legitimately live on any page (contact, booking,
+// reviews, social, schema). Computed for the homepage AND each crawled page,
+// then merged, so a contact form on /contact isn't a false "missing".
+function pageSignals(body) {
+  const $ = cheerio.load(body);
+  const html = body.toLowerCase();
+  const { types, rating } = collectJsonLdTypes($);
+  return {
+    ldTypes: types,
+    rating,
+    telLinks: $('a[href^="tel:"]').length,
+    forms: $('form').length,
+    emailInputs: $('input[type="email"], input[name*="email" i]').length,
+    mailtoLinks: $('a[href^="mailto:"]').length,
+    embeddedForm: /typeform\.com|jotform|docs\.google\.com\/forms|formstack|wufoo|hsforms\.|formspree|gravityforms|tally\.so|wpforms|contact-?form-?7/.test(html),
+    hasChat: CHAT_VENDORS.some((v) => html.includes(v)),
+    hasBooking: BOOKING_VENDORS.some((v) => html.includes(v)),
+    hasAiTool: AI_VENDORS.some((v) => html.includes(v)) || AI_KEYWORDS.some((k) => html.includes(k)),
+    hasTryOn: AR_KEYWORDS.some((k) => html.includes(k)),
+    bookingWords: has(html, 'book', 'appointment', 'schedule'),
+    reviewsShown: types.has('Review') || types.has('AggregateRating') || has(html, 'testimonial', 'reviews', 'what our customers'),
+    social: Object.entries(SOCIAL).filter(([, dom]) => html.includes(dom)).map(([name]) => name),
+    hasAddressSchema: types.has('PostalAddress') || /"address"\s*:/.test(body),
+    hasOpeningHours: /openinghours/i.test(body) || has(html, 'hours of operation', 'business hours', 'opening hours'),
+    ctaCount: countCtas($),
+  };
+}
+
+function mergeSignals(list) {
+  const ldTypes = new Set();
+  const social = new Set();
+  let rating = null;
+  const sum = (k) => list.reduce((a, s) => a + s[k], 0);
+  const any = (k) => list.some((s) => s[k]);
+  for (const s of list) {
+    s.ldTypes.forEach((t) => ldTypes.add(t));
+    s.social.forEach((x) => social.add(x));
+    if (!rating && s.rating?.value) rating = s.rating;
+  }
+  return {
+    ldTypes,
+    rating,
+    telLinks: sum('telLinks'),
+    forms: sum('forms'),
+    emailInputs: sum('emailInputs'),
+    mailtoLinks: sum('mailtoLinks'),
+    embeddedForm: any('embeddedForm'),
+    hasChat: any('hasChat'),
+    hasBooking: any('hasBooking'),
+    hasAiTool: any('hasAiTool'),
+    hasTryOn: any('hasTryOn'),
+    bookingWords: any('bookingWords'),
+    reviewsShown: any('reviewsShown'),
+    social: [...social],
+    hasAddressSchema: any('hasAddressSchema'),
+    hasOpeningHours: any('hasOpeningHours'),
+    ctaCount: sum('ctaCount'),
+  };
+}
+
+// Pick a few high-signal internal pages to also scan (contact, book, reviews...).
+const CRAWL_HINTS = ['contact', 'book', 'booking', 'appointment', 'schedule', 'reserve', 'about', 'service', 'pricing', 'price', 'review', 'testimonial', 'quote', 'menu', 'shop', 'store', 'gallery', 'get-started'];
+
+function internalLinks($, baseUrl, max = 5) {
+  let base;
+  try { base = new URL(baseUrl); } catch { return []; }
+  const seen = new Set();
+  const out = [];
+  $('a[href]').each((_, el) => {
+    if (out.length >= max) return;
+    const href = $(el).attr('href');
+    if (!href) return;
+    let u;
+    try { u = new URL(href, base); } catch { return; }
+    if (u.origin !== base.origin || !/^https?:$/.test(u.protocol)) return;
+    u.hash = '';
+    u.search = '';
+    const path = u.pathname.toLowerCase();
+    if (path === base.pathname.toLowerCase() || path === '/') return;
+    if (/\.(pdf|jpe?g|png|gif|svg|zip|mp4|webp|ico|css|js|xml|txt)$/.test(path)) return;
+    const text = ($(el).text() || '').toLowerCase();
+    if (!CRAWL_HINTS.some((h) => path.includes(h) || text.includes(h))) return;
+    if (seen.has(path)) return;
+    seen.add(path);
+    out.push(u.toString());
+  });
+  return out;
+}
+
 /* ----------------------------------------------------------- the handler  */
 
 export default async function handler(req, res) {
@@ -167,14 +270,12 @@ export default async function handler(req, res) {
   }
   const origin = new URL(url).origin;
 
-  // Fire page fetch, llms.txt, and PageSpeed all at once.
-  const [page, llms, psi] = await Promise.all([
-    fetchText(url, { timeout: 15_000 }),
-    fetchText(`${origin}/llms.txt`, { timeout: 8_000 }),
-    runPsi(url),
-  ]);
-  if (!psi.diag.ok) console.error('[audit] PageSpeed failed:', JSON.stringify(psi.diag));
+  // PageSpeed only needs the URL, so kick it off now (it's the long pole) and
+  // await it later, concurrent with the homepage fetch + crawl.
+  const psiPromise = runPsi(url);
 
+  // Fetch the homepage first so we can discover internal links to crawl.
+  const page = await fetchText(url, { timeout: 15_000 });
   if (!page.ok || !page.body) {
     res.status(422).json({
       error: "We couldn't load that site. Double-check the address and try again.",
@@ -187,8 +288,29 @@ export default async function handler(req, res) {
   const finalUrl = page.finalUrl || url;
   const isHttps = finalUrl.startsWith('https://');
 
-  // Gather reusable signals.
-  const { types: ldTypes, rating } = collectJsonLdTypes($);
+  // Crawl a few high-signal internal pages (contact, book, reviews...) so
+  // features that live off the homepage aren't reported as missing, then run
+  // llms.txt + PageSpeed (homepage) concurrently.
+  const crawlUrls = internalLinks($, finalUrl, 5);
+  const [subPages, llms, psi] = await Promise.all([
+    Promise.all(crawlUrls.map((u) => fetchText(u, { timeout: 9_000 }))),
+    fetchText(`${origin}/llms.txt`, { timeout: 8_000 }),
+    psiPromise,
+  ]);
+  if (!psi.diag.ok) console.error('[audit] PageSpeed failed:', JSON.stringify(psi.diag));
+
+  // Cross-page signals: merge the homepage with every crawled page.
+  const scanned = [page, ...subPages].filter((p) => p.ok && p.body);
+  const site = mergeSignals(scanned.map((p) => pageSignals(p.body)));
+  const {
+    ldTypes, rating, telLinks, forms, emailInputs, mailtoLinks, embeddedForm,
+    hasChat, hasBooking, hasAiTool, hasTryOn, reviewsShown, hasAddressSchema,
+    hasOpeningHours, ctaCount,
+  } = site;
+  const socialFound = site.social;
+  const hasMessagePath = forms > 0 || emailInputs > 0 || mailtoLinks > 0 || embeddedForm || telLinks > 0;
+
+  // Homepage-only signals (these belong to the page being shared/ranked).
   const meta = (sel) => ($(sel).attr('content') || '').trim();
   const ogTitle = meta('meta[property="og:title"]');
   const ogDesc = meta('meta[property="og:description"]');
@@ -201,17 +323,6 @@ export default async function handler(req, res) {
   const imgsWithAlt = imgs.filter((_, el) => ($(el).attr('alt') || '').trim().length > 0).length;
   const hasViewport = $('meta[name="viewport"]').length > 0;
   const noindex = /noindex/i.test($('meta[name="robots"]').attr('content') || '');
-  const telLinks = $('a[href^="tel:"]').length;
-  const forms = $('form').length;
-  const emailInputs = $('input[type="email"], input[name*="email" i]').length;
-  const mailtoLinks = $('a[href^="mailto:"]').length;
-  // Forms are often embedded via a third-party iframe/script, so a raw <form>
-  // count misses them. Detect the common providers too.
-  const embeddedForm = /typeform\.com|jotform|docs\.google\.com\/forms|formstack|wufoo|hsforms\.|formspree|gravityforms|tally\.so|wpforms|contact-?form-?7/.test(html);
-  // Any way at all for a customer to reach out from the page.
-  const hasMessagePath = forms > 0 || emailInputs > 0 || mailtoLinks > 0 || embeddedForm || telLinks > 0;
-  const hasAddressSchema = ldTypes.has('PostalAddress') || /"address"\s*:/.test(page.body);
-  const hasOpeningHours = /openinghours/i.test(page.body) || has(html, 'hours of operation', 'business hours', 'opening hours');
 
   const llmsPresent =
     llms.ok && llms.status === 200 && !llms.body.trim().startsWith('<') && llms.body.trim().length > 0;
@@ -221,9 +332,6 @@ export default async function handler(req, res) {
   const psiPerf = lh?.categories?.performance?.score != null ? Math.round(lh.categories.performance.score * 100) : null;
   const psiA11y = lh?.categories?.accessibility?.score != null ? Math.round(lh.categories.accessibility.score * 100) : null;
 
-  // Social link detection.
-  const socialFound = Object.entries(SOCIAL).filter(([, dom]) => html.includes(dom)).map(([name]) => name);
-
   /* --------------------------------------- 1. AI & Agent Readability ----- */
   const localSchema = [...ldTypes].some((t) => LOCAL_TYPES.includes(t));
   const richSchema = ['Service', 'Product', 'Review', 'AggregateRating', 'FAQPage', 'Menu', 'Offer'].some((t) => ldTypes.has(t));
@@ -232,7 +340,7 @@ export default async function handler(req, res) {
     !!(title || ogTitle), // name
     hasAddressSchema || telLinks > 0, // location/contact
     hasOpeningHours, // hours
-    BOOKING_VENDORS.some((v) => html.includes(v)) || has(html, 'book', 'appointment'), // booking
+    hasBooking || site.bookingWords, // booking
   ].filter(Boolean).length;
   const semanticTags = ['main', 'header', 'nav', 'footer', 'article', 'section'].filter((t) => $(t).length > 0).length;
 
@@ -324,11 +432,6 @@ export default async function handler(req, res) {
   ];
 
   /* --------------------------------------------- 3. AI Features On-Site -- */
-  const hasChat = CHAT_VENDORS.some((v) => html.includes(v));
-  const hasBooking = BOOKING_VENDORS.some((v) => html.includes(v));
-  const hasAiTool = AI_VENDORS.some((v) => html.includes(v)) || AI_KEYWORDS.some((k) => html.includes(k));
-  const hasTryOn = AR_KEYWORDS.some((k) => html.includes(k));
-
   const aiFeatures = [
     finding(
       'Live chat / instant replies',
@@ -357,8 +460,6 @@ export default async function handler(req, res) {
   ];
 
   /* ------------------------------------------- 4. Conversion & Capture --- */
-  const ctaFound = CTA_WORDS.filter((w) => html.includes(w));
-  const reviewsShown = ldTypes.has('Review') || ldTypes.has('AggregateRating') || has(html, 'testimonial', 'reviews', 'what our customers');
   const conversion = [
     finding(
       'Contact / lead form',
@@ -378,8 +479,12 @@ export default async function handler(req, res) {
     ),
     finding(
       'Clear calls-to-action',
-      ctaFound.length >= 2 ? 'pass' : ctaFound.length === 1 ? 'warn' : 'fail',
-      ctaFound.length ? `CTAs found: ${ctaFound.slice(0, 3).join(', ')}.` : 'No obvious call-to-action. Visitors don\'t know what to do next.',
+      ctaCount >= 3 ? 'pass' : ctaCount >= 1 ? 'warn' : 'fail',
+      ctaCount >= 3
+        ? `${ctaCount} clear action buttons/links across the pages we scanned.`
+        : ctaCount >= 1
+        ? `Only ${ctaCount} obvious call-to-action found. Visitors need an obvious next step on every screen.`
+        : 'No obvious call-to-action. Visitors don\'t know what to do next.',
     ),
     finding(
       'Reviews / social proof shown',
@@ -440,6 +545,7 @@ export default async function handler(req, res) {
     overall,
     categories,
     psiAvailable: psiPerf != null,
+    pagesScanned: scanned.length, // homepage + crawled internal pages
     psi: psi.diag, // { ok, status, keyUsed, error } — diagnostic for the PageSpeed call
   });
 }
