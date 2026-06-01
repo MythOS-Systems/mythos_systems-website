@@ -9,6 +9,7 @@ import { SanDiegoPage } from './pages/SanDiegoPage';
 import { DFWPage } from './pages/DFWPage';
 import { PartnerPage } from './pages/PartnerPage';
 import { EventsPage } from './pages/EventsPage';
+import { WebsiteAuditPage } from './pages/WebsiteAuditPage';
 
 type PageType =
   | 'home'
@@ -20,7 +21,8 @@ type PageType =
   | 'sandiego'
   | 'dfw'
   | 'partner'
-  | 'events';
+  | 'events'
+  | 'websiteAudit';
 
 /** Map state-routing page names → URL paths. Plain home stays at "/". */
 const PATH_FOR: Record<PageType, string> = {
@@ -34,6 +36,7 @@ const PATH_FOR: Record<PageType, string> = {
   dfw: '/dfw',
   partner: '/partner',
   events: '/events',
+  websiteAudit: '/website-audit',
 };
 
 const PAGE_FOR_PATH = (() => {
@@ -95,6 +98,10 @@ const ROUTE_META: Record<PageType, { title: string; description: string }> = {
     description:
       'MythOS events, headlined by Fight for Local: a championship fight night in Dallas / Fort Worth with a community hackathon.',
   },
+  websiteAudit: {
+    title: 'Website Audit | MythOS',
+    description: 'Internal website audit tool.',
+  },
 };
 
 function setMetaTag(attr: 'name' | 'property', key: string, content: string) {
@@ -116,6 +123,8 @@ function applyRouteMeta(page: PageType) {
   setMetaTag('name', 'twitter:title', m.title);
   setMetaTag('name', 'twitter:description', m.description);
   setMetaTag('property', 'og:url', `https://mythosrebellion.com${PATH_FOR[page] === '/' ? '' : PATH_FOR[page]}`);
+  // Keep the internal audit tool out of search results; reset to indexable elsewhere.
+  setMetaTag('name', 'robots', page === 'websiteAudit' ? 'noindex, nofollow' : 'index, follow');
 
   let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!link) {
@@ -174,6 +183,8 @@ export default function App() {
       return <PartnerPage />;
     case 'events':
       return <EventsPage />;
+    case 'websiteAudit':
+      return <WebsiteAuditPage />;
     default:
       return <HomePage />;
   }

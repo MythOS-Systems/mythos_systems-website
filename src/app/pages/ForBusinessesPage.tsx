@@ -4,6 +4,7 @@ import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { Check, TrendingUp, Users, Zap, DollarSign, Target, BarChart } from 'lucide-react';
 import { useState } from 'react';
 import { ProductAccessModal } from '../components/ProductAccessModal';
+import { WebsiteAuditor } from '../components/WebsiteAuditor';
 import { ContainerScroll } from '../components/ui/container-scroll-animation';
 
 export function ForBusinessesPage() {
@@ -137,6 +138,9 @@ export function ForBusinessesPage() {
           </button>
         </div>
       </section>
+
+      {/* Website Auditor lead magnet */}
+      <WebsiteAuditor onRequestFix={() => setIsModalOpen(true)} />
 
       {/* Benefits Grid */}
       <section className="py-20 bg-[#111111]">
