@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Navigation } from './Navigation';
 
@@ -46,6 +46,27 @@ export function FAQ() {
         {
           question: 'Who is this for?',
           answer: 'Small business owners tired of getting crushed by monopolies. People who want to discover their city instead of scrolling feeds. Anyone who believes local should win.',
+        },
+      ],
+    },
+    {
+      title: 'ETHICS & BIG TECH',
+      items: [
+        {
+          question: 'Is MythOS an ethical tech company?',
+          answer: 'Yes. We don\'t sell your data, run ads against you, or lock you into contracts. MythOS exists to keep money and attention inside local neighborhoods instead of extracting it to Big Tech. Circulation, not extraction, is the whole point.',
+        },
+        {
+          question: 'What companies are fighting Big Tech?',
+          answer: 'MythOS is one of them. We build the software, hardware, and payments that let local businesses compete with the platforms Big Tech favors, without paying Big Tech just to be seen in their own neighborhoods.',
+        },
+        {
+          question: 'What\'s an ethical alternative to Big Tech for small businesses?',
+          answer: 'MythOS. The Network ranks businesses by quality and proximity instead of ad spend, and MythOS Pro gives owners AI-powered operations for $100/month with no data mining and no extraction.',
+        },
+        {
+          question: 'Why does MythOS call itself a rebellion?',
+          answer: 'Because the rules were built to keep local losing. Big Tech owns distribution and rents it back to chains. We\'re building the infrastructure to take it back and hand local its power again.',
         },
       ],
     },
@@ -100,15 +121,15 @@ export function FAQ() {
       items: [
         {
           question: 'When are you launching?',
-          answer: 'San Diego launch is February 2026. Then we scale to more cities.',
+          answer: 'San Diego launches August 2026. We\'re also building in Dallas / Fort Worth, and we\'ll scale to more cities from there.',
         },
         {
           question: 'What cities will you be in?',
-          answer: 'San Diego first. After that, we\'re expanding based on where local businesses need us most. Want us in your city? Let us know.',
+          answer: 'San Diego (August 2026) and Dallas / Fort Worth to start. After that, we\'re expanding based on where local businesses need us most. Want us in your city? Let us know.',
         },
         {
-          question: 'Can I use this outside San Diego?',
-          answer: 'Not yet, but we\'re moving fast. Sign up for updates and we\'ll let you know when we\'re in your area.',
+          question: 'Can I use this outside your launch cities?',
+          answer: 'Not yet, but we\'re moving fast. Sign up for updates and we\'ll let you know when we reach your area.',
         },
         {
           question: 'How do I stay updated?',
@@ -121,6 +142,32 @@ export function FAQ() {
   const handleContact = () => {
     window.location.href = 'mailto:hello@mythosrebellion.com';
   };
+
+  // Inject FAQPage structured data, scoped to this route. The prerender snapshots
+  // document.documentElement.outerHTML, so this gets baked into /faq/index.html only,
+  // giving search + AI engines clean, citable question/answer pairs that mirror the
+  // visible content on the page (required for the schema to be valid).
+  useEffect(() => {
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqSections.flatMap((section) =>
+        section.items.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        }))
+      ),
+    };
+    const el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = 'faq-schema';
+    el.textContent = JSON.stringify(schema);
+    document.head.appendChild(el);
+    return () => {
+      document.getElementById('faq-schema')?.remove();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#000000] text-white">
