@@ -128,6 +128,35 @@ function collectJsonLdTypes($) {
 
 const LOCAL_TYPES = ['LocalBusiness', 'Restaurant', 'Store', 'Dentist', 'MedicalBusiness', 'HealthAndBeautyBusiness', 'HomeAndConstructionBusiness', 'ProfessionalService', 'AutoRepair', 'BeautySalon', 'HairSalon', 'Plumber', 'Electrician', 'Organization'];
 
+/* Run PageSpeed Insights and return both the data and a diagnostic so failures
+ * are visible (in logs and the response) instead of silently swallowed. */
+async function runPsi(url) {
+  const params = new URLSearchParams({ url, strategy: 'mobile' });
+  for (const c of ['PERFORMANCE', 'SEO', 'ACCESSIBILITY', 'BEST_PRACTICES']) params.append('category', c);
+  const key = process.env.PAGESPEED_API_KEY;
+  if (key) params.set('key', key);
+
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), 45_000);
+  try {
+    const resp = await fetch(`${PSI_ENDPOINT}?${params}`, { signal: controller.signal });
+    if (!resp.ok) {
+      let error = `HTTP ${resp.status}`;
+      try {
+        const b = await resp.json();
+        if (b?.error?.message) error = b.error.message;
+      } catch {}
+      return { data: null, diag: { ok: false, status: resp.status, keyUsed: !!key, error } };
+    }
+    return { data: await resp.json(), diag: { ok: true, status: 200, keyUsed: !!key, error: null } };
+  } catch (err) {
+    const timeout = err?.name === 'AbortError';
+    return { data: null, diag: { ok: false, status: 0, keyUsed: !!key, error: timeout ? 'timeout' : String(err?.message || err) } };
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 /* ----------------------------------------------------------- the handler  */
 
 export default async function handler(req, res) {
@@ -139,15 +168,12 @@ export default async function handler(req, res) {
   const origin = new URL(url).origin;
 
   // Fire page fetch, llms.txt, and PageSpeed all at once.
-  const psiParams = new URLSearchParams({ url, strategy: 'mobile' });
-  for (const c of ['PERFORMANCE', 'SEO', 'ACCESSIBILITY', 'BEST_PRACTICES']) psiParams.append('category', c);
-  if (process.env.PAGESPEED_API_KEY) psiParams.set('key', process.env.PAGESPEED_API_KEY);
-
-  const [page, llms, psiResp] = await Promise.all([
+  const [page, llms, psi] = await Promise.all([
     fetchText(url, { timeout: 15_000 }),
     fetchText(`${origin}/llms.txt`, { timeout: 8_000 }),
-    fetch(`${PSI_ENDPOINT}?${psiParams}`).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    runPsi(url),
   ]);
+  if (!psi.diag.ok) console.error('[audit] PageSpeed failed:', JSON.stringify(psi.diag));
 
   if (!page.ok || !page.body) {
     res.status(422).json({
@@ -185,7 +211,7 @@ export default async function handler(req, res) {
     llms.ok && llms.status === 200 && !llms.body.trim().startsWith('<') && llms.body.trim().length > 0;
 
   // PSI-derived numbers (may be null if no key / failure).
-  const lh = psiResp?.lighthouseResult;
+  const lh = psi.data?.lighthouseResult;
   const psiPerf = lh?.categories?.performance?.score != null ? Math.round(lh.categories.performance.score * 100) : null;
   const psiA11y = lh?.categories?.accessibility?.score != null ? Math.round(lh.categories.accessibility.score * 100) : null;
 
@@ -398,5 +424,6 @@ export default async function handler(req, res) {
     overall,
     categories,
     psiAvailable: psiPerf != null,
+    psi: psi.diag, // { ok, status, keyUsed, error } — diagnostic for the PageSpeed call
   });
 }
