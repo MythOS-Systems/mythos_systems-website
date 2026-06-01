@@ -204,6 +204,12 @@ export default async function handler(req, res) {
   const telLinks = $('a[href^="tel:"]').length;
   const forms = $('form').length;
   const emailInputs = $('input[type="email"], input[name*="email" i]').length;
+  const mailtoLinks = $('a[href^="mailto:"]').length;
+  // Forms are often embedded via a third-party iframe/script, so a raw <form>
+  // count misses them. Detect the common providers too.
+  const embeddedForm = /typeform\.com|jotform|docs\.google\.com\/forms|formstack|wufoo|hsforms\.|formspree|gravityforms|tally\.so|wpforms|contact-?form-?7/.test(html);
+  // Any way at all for a customer to reach out from the page.
+  const hasMessagePath = forms > 0 || emailInputs > 0 || mailtoLinks > 0 || embeddedForm || telLinks > 0;
   const hasAddressSchema = ldTypes.has('PostalAddress') || /"address"\s*:/.test(page.body);
   const hasOpeningHours = /openinghours/i.test(page.body) || has(html, 'hours of operation', 'business hours', 'opening hours');
 
@@ -325,9 +331,13 @@ export default async function handler(req, res) {
 
   const aiFeatures = [
     finding(
-      'Live chat / messaging',
-      hasChat ? 'pass' : 'fail',
-      hasChat ? 'A chat widget is live on the site.' : 'No way for a customer to message you from the site. Every after-hours question is a lost lead.',
+      'Live chat / instant replies',
+      hasChat ? 'pass' : hasMessagePath ? 'warn' : 'fail',
+      hasChat
+        ? 'A live chat widget is on the site, so customers can get answers instantly.'
+        : hasMessagePath
+        ? 'You have a contact method, but no live chat, so customers wait hours for a reply instead of an instant answer. Mylo responds in seconds, 24/7.'
+        : 'No live chat or contact method on the page, so there\'s no quick way for a customer to reach you. Every after-hours question is a lost lead.',
     ),
     finding(
       'Online booking widget',
@@ -352,8 +362,14 @@ export default async function handler(req, res) {
   const conversion = [
     finding(
       'Contact / lead form',
-      forms > 0 && emailInputs > 0 ? 'pass' : forms > 0 ? 'warn' : 'fail',
-      forms > 0 ? `${forms} form(s) detected${emailInputs ? '' : ', but none capture an email'}.` : 'No contact form. Interested visitors have no easy way to reach you.',
+      (forms > 0 && emailInputs > 0) || embeddedForm ? 'pass' : forms > 0 || mailtoLinks > 0 ? 'warn' : 'fail',
+      (forms > 0 && emailInputs > 0) || embeddedForm
+        ? 'A contact form is in place for visitors to reach you.'
+        : forms > 0
+        ? `${forms} form(s) detected, but none capture an email.`
+        : mailtoLinks > 0
+        ? 'Only a plain email link, no contact form, so you lose visitors who won\'t open their mail app.'
+        : 'No contact form. Interested visitors have no easy way to reach you.',
     ),
     finding(
       'Online booking / scheduling',
