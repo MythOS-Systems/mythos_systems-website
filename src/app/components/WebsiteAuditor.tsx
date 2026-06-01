@@ -226,8 +226,8 @@ export function WebsiteAuditor({ onRequestFix, gated = true }: WebsiteAuditorPro
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 mb-5 rounded-full border border-[#9D4EDD]/40 bg-[#9D4EDD]/10 text-[#C99BF5] text-xs uppercase tracking-wider">
-            <Sparkles size={14} /> Free AI-era website audit
+          <div className="inline-flex items-center px-3 py-1 mb-5 rounded-full border border-[#9D4EDD]/40 bg-[#9D4EDD]/10 text-[#C99BF5] text-xs uppercase tracking-wider">
+            Free AI-era website audit
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'var(--font-headline)' }}>
             Is your website ready for the AI era?
@@ -403,10 +403,12 @@ export function WebsiteAuditor({ onRequestFix, gated = true }: WebsiteAuditorPro
 
                 {/* Pitch block */}
                 <div className="relative rounded-2xl border border-[#9D4EDD]/40 bg-gradient-to-br from-[#9D4EDD]/15 via-[#0047FF]/5 to-transparent p-8 md:p-12 text-center overflow-hidden">
-                  <Sparkles size={28} className="text-[#C99BF5] mx-auto mb-4" />
                   <h3 className="text-3xl md:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'var(--font-headline)' }}>
-                    See the after, before the after.
+                    Own Your Digital Presence
                   </h3>
+                  <p className="text-lg md:text-xl text-[#C99BF5] font-semibold mb-3">
+                    See the after, before the after.
+                  </p>
                   <p className="text-lg text-[#D0D0D0] max-w-2xl mx-auto mb-2">
                     Your customers shouldn't have to imagine the result. Mylo shows them.
                   </p>
