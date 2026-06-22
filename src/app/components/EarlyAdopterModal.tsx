@@ -45,14 +45,14 @@ export function EarlyAdopterModal({ isOpen, onClose }: EarlyAdopterModalProps) {
       if (formData.facebook) socialMediaHandles.facebook = formData.facebook;
 
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-74a5ff22/early-adopter-business`,
+        `/api/submit`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify({
+            kind: 'early-adopter-business',
             business_name: formData.businessName,
             owner_name: formData.ownerName,
             owner_email: formData.ownerEmail,

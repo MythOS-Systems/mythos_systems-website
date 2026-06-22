@@ -38,14 +38,14 @@ export function AffiliateModal({ isOpen, onClose }: AffiliateModalProps) {
 
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-74a5ff22/creator-affiliate`,
+        `/api/submit`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify({
+            kind: 'creator-affiliate',
             creator_name: formData.creatorName,
             email: formData.email,
             platform: formData.platform,

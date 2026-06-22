@@ -128,17 +128,19 @@ export function EventsPage() {
     setSubscribeError('');
     setSubscribing(true);
     try {
-      // Store directly to the early_access table via PostgREST (anon insert is
-      // allowed). Tagged source=events_page so it's filterable from other signups.
-      const res = await fetch(`https://${projectId}.supabase.co/rest/v1/early_access`, {
+      // Route into the MythOS Pro Comms inbox via the website's forwarder.
+      // Tagged source=events_page so it's filterable from other signups.
+      const res = await fetch(`/api/submit`, {
         method: 'POST',
         headers: {
-          apikey: publicAnonKey,
-          Authorization: `Bearer ${publicAnonKey}`,
           'Content-Type': 'application/json',
-          Prefer: 'return=minimal',
         },
-        body: JSON.stringify({ email: email.trim(), city: 'Events page', source: 'events_page' }),
+        body: JSON.stringify({
+          kind: 'events-signup',
+          email: email.trim(),
+          city: 'Events page',
+          source: 'events_page',
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

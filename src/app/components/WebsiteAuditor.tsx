@@ -179,15 +179,13 @@ export function WebsiteAuditor({ onRequestFix, gated = true }: WebsiteAuditorPro
           return acc;
         }, {}) || {};
 
-      const resp = await fetch(`https://${projectId}.supabase.co/rest/v1/website_audit_leads`, {
+      const resp = await fetch(`/api/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          apikey: publicAnonKey,
-          Authorization: `Bearer ${publicAnonKey}`,
-          Prefer: 'return=minimal',
         },
         body: JSON.stringify({
+          kind: 'website-audit-lead',
           email: email.trim(),
           website_url: result?.finalUrl || url.trim(),
           business_name: businessName.trim() || null,

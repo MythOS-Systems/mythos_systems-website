@@ -38,14 +38,14 @@ export function JobApplicationModal({ isOpen, onClose }: JobApplicationModalProp
 
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-74a5ff22/job-application`,
+        `/api/submit`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify({
+            kind: 'job-application',
             full_name: formData.fullName,
             email: formData.email,
             position_applied_for: formData.positionAppliedFor,

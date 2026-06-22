@@ -38,14 +38,14 @@ export function BIDChamberModal({ isOpen, onClose }: BIDChamberModalProps) {
 
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-74a5ff22/bid-chamber-partner`,
+        `/api/submit`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify({
+            kind: 'bid-chamber-partner',
             organization_name: formData.organizationName,
             organization_type: formData.organizationType,
             contact_name: formData.contactName,

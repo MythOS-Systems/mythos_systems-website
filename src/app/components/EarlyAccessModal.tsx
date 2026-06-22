@@ -23,14 +23,14 @@ export function EarlyAccessModal({ isOpen, onClose }: EarlyAccessModalProps) {
 
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-74a5ff22/early-access`,
+        `/api/submit`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify({
+            kind: 'early-access',
             email,
             city,
             source: 'homepage_rebellion',

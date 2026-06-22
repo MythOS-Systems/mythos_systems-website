@@ -26,31 +26,31 @@ export function ProductAccessModal({ isOpen, onClose, type }: ProductAccessModal
     setError('');
 
     try {
-      let endpoint = '';
+      let kind = '';
       let source = '';
       let body: any = { email, city };
 
       if (type === 'network') {
-        endpoint = 'early-access';
+        kind = 'network-early-access';
         source = 'homepage_network_card';
       } else if (type === 'pro') {
-        endpoint = 'mythos-pro-early-access';
+        kind = 'mythos-pro-early-access';
         source = 'homepage_pro_card';
         body.business_name = businessName;
       } else {
-        endpoint = 'mylo-personal-early-access';
+        kind = 'mylo-personal-early-access';
         source = 'homepage_mylo_personal_card';
       }
 
+      body.kind = kind;
       body.source = source;
 
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-74a5ff22/${endpoint}`,
+        `/api/submit`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify(body),
         }

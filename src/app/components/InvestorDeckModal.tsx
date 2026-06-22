@@ -28,14 +28,13 @@ export function InvestorDeckModal({ isOpen, onClose }: InvestorDeckModalProps) {
 
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-74a5ff22/investor-lead`,
+        `/api/submit`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({ kind: 'investor-lead', ...formData }),
         }
       );
 
