@@ -390,7 +390,7 @@ app.post("/make-server-74a5ff22/early-adopter-business", async (c) => {
           referred_by: referred_by || null,
           feedback_notes: feedback_notes || null,
           partnership_status: 'pending',
-          network_launch_city: 'San Diego',
+          network_launch_city: 'Dallas / Fort Worth',
           myth_credits_awarded: 0,
         }
       ])

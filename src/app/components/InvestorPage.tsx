@@ -2,24 +2,16 @@ import { useState, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import {
   ArrowRight,
-  ArrowUpRight,
   Play,
   FileText,
-  ScanFace,
-  Hand,
   Sparkles,
-  Eye,
   Glasses,
   Wallet,
-  Volume2,
-  Mic,
 } from 'lucide-react';
 import { Navigation } from './Navigation';
 import { Footer } from './Footer';
 import { InvestorDeckModal } from './InvestorDeckModal';
-import { DeckViewerModal } from './DeckViewerModal';
 import { GlassesDemoModal } from './GlassesDemoModal';
-import { MirrorDemoModal } from './MirrorDemoModal';
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   return (
@@ -47,24 +39,13 @@ function Eyebrow({ children, color = '#0047FF' }: { children: ReactNode; color?:
 }
 
 export function InvestorPage() {
-  const [deckOpen, setDeckOpen] = useState(false);
   const [requestOpen, setRequestOpen] = useState(false);
   const [glassesOpen, setGlassesOpen] = useState(false);
-  const [mirrorOpen, setMirrorOpen] = useState(false);
 
   const pillars = [
-    { label: 'The market', desc: '$40B in local-business software, $7-10B in smart mirrors, and a slice of multi-trillion local commerce. We sit on top of all of it.', color: '#0047FF' },
-    { label: 'The moat', desc: 'Reinforcing edges - SaaS depth, hardware lock-in, 0.7% payments, one AI brain - and The Network capturing hyper-local behavioral data no one else can touch.', color: '#9D4EDD' },
-    { label: 'The entry', desc: 'A $500K bridge today, ahead of a priced $3-5M round. Early - by design.', color: '#FF4500' },
-  ];
-
-  const mirrorSteps = [
-    { icon: <Eye size={20} />, title: 'Client sits down', desc: 'The mirror activates - no app, no friction.' },
-    { icon: <ScanFace size={20} />, title: 'Face capture & analysis', desc: 'It reads face shape, hair, and features in seconds.' },
-    { icon: <Hand size={20} />, title: 'Browse styles by gesture', desc: 'Flip through cuts and colors with a wave of the hand.' },
-    { icon: <Sparkles size={20} />, title: 'AI previews them', desc: 'Generates a photo-real preview of the client with the cut.' },
-    { icon: <Volume2 size={20} />, title: 'Streaming mode', desc: 'After the consult, the mirror becomes their screen - directional speakers keep the sound in that chair, never bleeding into the next one.' },
-    { icon: <Mic size={20} />, title: 'Talk with Mylo', desc: 'The same AI brain that runs the shop lives in the mirror - clients just talk to Mylo, hands-free.' },
+    { label: 'The market', desc: '$40B in local-business software, premium AI hardware, and a slice of multi-trillion local commerce. We sit on top of all of it.', color: '#0047FF' },
+    { label: 'The moat', desc: 'Reinforcing edges - SaaS depth, 0.7% payments, one AI brain - and The Network capturing hyper-local behavioral data no one else can touch.', color: '#9D4EDD' },
+    { label: 'The entry', desc: 'A bridge round today, ahead of a priced $3-5M round. Early - by design.', color: '#FF4500' },
   ];
 
   const builds = [
@@ -122,25 +103,17 @@ export function InvestorPage() {
                   <Eyebrow>The thesis · 29 slides</Eyebrow>
                   <h2 className="mythos-headline-medium text-white">The whole story, in five minutes.</h2>
                   <p className="mt-4 text-[#B0B0B0]">
-                    The problem, the operating system, the hardware, the traction, and the ask - read it right here.
+                    The problem, the operating system, the hardware, the traction, and the ask. Request a copy and we'll send the full deck straight over.
                   </p>
                 </div>
                 <div className="flex flex-shrink-0 flex-col gap-3 sm:flex-row">
                   <button
-                    onClick={() => setDeckOpen(true)}
-                    data-mythos-track="investors-view-deck-hero"
-                    className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#0047FF] px-8 py-4 font-semibold text-white transition-all hover:gap-4 hover:shadow-xl hover:shadow-[#0047FF]/40"
-                  >
-                    <Play size={20} fill="currentColor" />
-                    View the Deck
-                  </button>
-                  <button
                     onClick={() => setRequestOpen(true)}
                     data-mythos-track="investors-request-copy-hero"
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-8 py-4 font-semibold text-white transition-colors hover:bg-white/10"
+                    className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#0047FF] px-8 py-4 font-semibold text-white transition-all hover:gap-4 hover:shadow-xl hover:shadow-[#0047FF]/40"
                   >
                     <FileText size={18} />
-                    Request a copy
+                    Request the Deck
                   </button>
                 </div>
               </div>
@@ -169,81 +142,11 @@ export function InvestorPage() {
         </Reveal>
       </section>
 
-      {/* ===== 3. THE MIRROR / HARDWARE ===== */}
+      {/* ===== 3. THE HARDWARE (Mylo Glasses) ===== */}
       <section className="border-b border-white/10 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <Reveal>
-            <Eyebrow color="#9D4EDD">The hardware</Eyebrow>
-            <h2 className="mythos-headline-large max-w-3xl text-white">A smart mirror at every chair.</h2>
-            <p className="mt-5 max-w-2xl text-lg text-[#B0B0B0]">
-              Software gets copied. Hardware gets installed. The MythOS Mirror turns every barber and salon chair into
-              an AI experience - and a moat.
-            </p>
-            <button
-              onClick={() => setMirrorOpen(true)}
-              className="group mt-7 inline-flex items-center gap-3 rounded-full bg-[#0047FF] px-8 py-4 font-semibold text-white transition-all hover:gap-4 hover:shadow-xl hover:shadow-[#0047FF]/40"
-            >
-              <Play size={20} fill="currentColor" />
-              Explore the build
-            </button>
-          </Reveal>
-
-          <div className="mt-12 grid items-center gap-10 lg:grid-cols-2">
-            {/* Mirror image (placeholder until asset added) */}
-            <Reveal>
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/10">
-                <img
-                  src="/mirror.png"
-                  alt="The MythOS Smart Mirror - in-chair hairstyle preview"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </Reveal>
-
-            {/* In-chair experience */}
-            <div className="space-y-6">
-              {mirrorSteps.map((s, i) => (
-                <Reveal key={s.title} delay={i * 0.08}>
-                  <div className="flex gap-4">
-                    <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-[#0047FF]/40 bg-[#0047FF]/10 text-[#0047FF]">
-                      {s.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-white">{s.title}</h3>
-                      <p className="text-sm text-[#B0B0B0]">{s.desc}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-              <Reveal delay={0.3}>
-                <p className="border-l-2 border-[#FF4500] pl-4 text-sm italic text-[#B0B0B0]">
-                  "Decide with confidence. Cut with confidence." Six mirrors per shop means switching off MythOS is a
-                  hardware rip-out - that's the moat.
-                </p>
-              </Reveal>
-            </div>
-          </div>
-
-          {/* See it live - Minty Barber */}
-          <Reveal>
-            <div className="mt-12 flex flex-col items-start gap-4 rounded-xl border border-[#0047FF]/30 bg-[#0047FF]/5 p-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-[#B0B0B0]">
-                Want to see our AI try-on tech in action? See it live on one of our customers' websites:
-              </p>
-              <a
-                href="https://www.mintybarber.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex flex-shrink-0 items-center gap-2 rounded-full bg-[#0047FF] px-6 py-3 font-semibold text-white transition-all hover:gap-3"
-              >
-                Visit Minty Barber
-                <ArrowUpRight size={18} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </a>
-            </div>
-          </Reveal>
-
-          {/* ===== Mylo Glasses - dedicated build under the mirror ===== */}
-          <div className="mt-20 border-t border-white/10 pt-16">
+          {/* ===== Mylo Glasses - the hardware build ===== */}
+          <div>
             <Reveal>
               <Eyebrow color="#FF4500">On the face</Eyebrow>
               <div className="flex flex-wrap items-center gap-3">
@@ -253,9 +156,8 @@ export function InvestorPage() {
                 </span>
               </div>
               <p className="mt-5 max-w-2xl text-lg text-[#B0B0B0]">
-                The mirror is the operating system of the chair. Mylo Glasses are the operating system of the human - 
-                one premium device with a full in-lens display, putting Mylo on the face of every operator and,
-                eventually, everyone on The Network.
+                Mylo Glasses are the operating system of the human - one premium device with a full in-lens display,
+                putting Mylo on the face of every operator and, eventually, everyone on The Network.
               </p>
               <button
                 onClick={() => setGlassesOpen(true)}
@@ -275,8 +177,8 @@ export function InvestorPage() {
                   <h3 className="mb-2 text-lg font-bold text-white">For operators</h3>
                   <p className="text-sm leading-relaxed text-[#B0B0B0]">
                     Walk in and Mylo briefs you on every client before they sit - last visit's notes, their cut, their
-                    preferences. Ask a question and it answers on your glasses while the result renders on the client's
-                    mirror.
+                    preferences. Ask a question and it answers right on your glasses, hands-free, without breaking your
+                    stride.
                   </p>
                 </div>
               </Reveal>
@@ -354,59 +256,6 @@ export function InvestorPage() {
         </div>
       </section>
 
-      {/* ===== 4. BIG TECH TAX REPORT ===== */}
-      <section className="border-b border-white/10 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <Reveal>
-            <Eyebrow color="#FF4500">
-              <span className="text-white">Research project</span> · in partnership with UT Dallas
-            </Eyebrow>
-            <h2 className="mythos-headline-large max-w-3xl text-white">
-              How much is <span className="text-[#FF4500]">Big Tech</span> costing your business?
-            </h2>
-            <p className="mt-5 max-w-2xl text-lg text-[#B0B0B0]">
-              We're quantifying the "Visibility Tax" - what local businesses are forced to spend just to be found
-              online - straight from the source.
-            </p>
-          </Reveal>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-3">
-            {([
-              { num: '$238B', label: 'Google ad revenue in 2023 alone' },
-              { num: '72%', label: 'of SMBs say ad costs rose year over year' },
-              {
-                num: 'Matt Stoller',
-                label: 'Leading anti-trust expert · featured in the report',
-                eyebrow: 'EXCLUSIVE INTERVIEW',
-                small: true,
-              },
-            ] as { num: string; label: string; eyebrow?: string; small?: boolean }[]).map((s, i) => (
-              <Reveal key={s.label} delay={i * 0.08}>
-                <div className="rounded-xl border border-white/10 bg-[#111] p-6">
-                  {s.eyebrow && (
-                    <div className="mb-2 text-xs font-semibold tracking-[0.15em] text-[#FF4500]">
-                      {s.eyebrow}
-                    </div>
-                  )}
-                  <div
-                    className="mythos-stat-number bg-gradient-to-b from-white to-[#8cb4d8] bg-clip-text text-transparent"
-                    style={s.small ? { fontSize: 'clamp(1.75rem, 4vw, 2.75rem)' } : undefined}
-                  >
-                    {s.num}
-                  </div>
-                  <p className="mt-2 text-sm text-[#B0B0B0]">{s.label}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal>
-            <p className="mt-6 text-sm text-[#707070]">
-              The full report drops soon - watch for it in the press.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ===== 6. THE ASK ===== */}
       <section className="border-b border-white/10 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
@@ -414,18 +263,18 @@ export function InvestorPage() {
             <Reveal>
               <Eyebrow>The ask</Eyebrow>
               <h2 className="mythos-headline-large text-white">
-                <span className="text-[#0047FF]">$500K</span> bridge to ship the proof.
+                A <span className="text-[#0047FF]">bridge round</span> to ship the proof.
               </h2>
               <p className="mt-5 max-w-md text-lg text-[#B0B0B0]">
-                Enough to put mirrors in real chairs, prove the unit economics in one city, and step into a priced
+                Enough to put MythOS Pro in real shops, prove the unit economics in one city, and step into a priced
                 <span className="text-white"> $3-5M</span> round from strength.
               </p>
             </Reveal>
             <Reveal delay={0.1}>
               <div className="space-y-3">
                 {[
-                  { k: 'First mirror batch', v: 'Hardware in real shops' },
-                  { k: 'San Diego + Dallas', v: 'Prove the model city by city' },
+                  { k: 'First shops live', v: 'MythOS Pro in real businesses' },
+                  { k: 'Dallas / Fort Worth', v: 'Prove the model city by city' },
                   { k: 'The team', v: 'Ship faster, sign partners' },
                 ].map((row) => (
                   <div key={row.k} className="flex items-center justify-between rounded-xl border border-white/10 bg-[#111] px-6 py-5">
@@ -446,17 +295,9 @@ export function InvestorPage() {
             <h2 className="mythos-headline-medium text-white">Start a conversation.</h2>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <button
-                onClick={() => setDeckOpen(true)}
-                data-mythos-track="investors-view-deck-contact"
-                className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#0047FF] px-8 py-4 font-semibold text-white transition-all hover:gap-4"
-              >
-                <Play size={18} fill="currentColor" />
-                View the Deck
-              </button>
-              <button
                 onClick={() => setRequestOpen(true)}
                 data-mythos-track="investors-request-copy-contact"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-8 py-4 font-semibold text-white transition-colors hover:bg-white/10"
+                className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#0047FF] px-8 py-4 font-semibold text-white transition-all hover:gap-4"
               >
                 Request the deck & intro <ArrowRight size={18} />
               </button>
@@ -481,9 +322,7 @@ export function InvestorPage() {
 
       <Footer />
 
-      <DeckViewerModal isOpen={deckOpen} onClose={() => setDeckOpen(false)} />
       <GlassesDemoModal isOpen={glassesOpen} onClose={() => setGlassesOpen(false)} />
-      <MirrorDemoModal isOpen={mirrorOpen} onClose={() => setMirrorOpen(false)} />
       <InvestorDeckModal isOpen={requestOpen} onClose={() => setRequestOpen(false)} />
     </div>
   );

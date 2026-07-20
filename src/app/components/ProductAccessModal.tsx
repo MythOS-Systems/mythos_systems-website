@@ -163,7 +163,7 @@ export function ProductAccessModal({ isOpen, onClose, type }: ProductAccessModal
                   onChange={(e) => setCity(e.target.value)}
                   required
                   className="w-full px-4 py-3 bg-[#000000] border border-white/20 rounded text-white placeholder-[#707070] focus:outline-none focus:border-[#0047FF] transition-colors"
-                  placeholder="San Diego"
+                  placeholder="Dallas"
                 />
               </div>
 

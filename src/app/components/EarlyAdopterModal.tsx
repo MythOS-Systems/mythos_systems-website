@@ -148,7 +148,7 @@ export function EarlyAdopterModal({ isOpen, onClose }: EarlyAdopterModalProps) {
             <h2 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-headline)' }}>
               Become a Founding Partner
             </h2>
-            <p className="text-[#B0B0B0] mb-6">San Diego Early Adopters - Launching 2026</p>
+            <p className="text-[#B0B0B0] mb-6">DFW Early Adopters - Launching 2026</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>

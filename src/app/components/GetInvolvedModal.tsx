@@ -35,7 +35,7 @@ export function GetInvolvedModal({ isOpen, onClose }: GetInvolvedModalProps) {
             Get Involved
           </h2>
           <p className="text-[#B0B0B0] text-lg mb-6">
-            Want to help with the San Diego launch?
+            Want to help with the DFW launch?
           </p>
           <p className="text-2xl font-bold text-white mb-8" style={{ fontFamily: 'var(--font-headline)' }}>
             DM us on Instagram

@@ -159,6 +159,54 @@ export function ManifestoPage() {
         </motion.div>
       </section>
 
+      {/* ===== BIG TECH TAX REPORT ===== */}
+      <section className="px-6 pt-24 lg:px-8">
+        <motion.div className="mx-auto max-w-6xl" {...reveal}>
+          <Label>The Big Tech Tax Report · with UT Dallas</Label>
+          <h2
+            className="max-w-[20ch] text-[clamp(1.7rem,4.2vw,3rem)] font-bold leading-[1.1] tracking-tight text-white"
+            style={{ fontFamily: 'var(--font-headline)' }}
+          >
+            How much is <span style={{ color: ACCENT }}>Big Tech</span> costing your business?
+          </h2>
+          <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-[#B0B0B0]">
+            We're quantifying the "Visibility Tax" - what local businesses are forced to spend just to be found online -
+            straight from the source, in partnership with UT Dallas.
+          </p>
+
+          <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-3">
+            {([
+              { num: '$238B', label: 'Google ad revenue in 2023 alone' },
+              { num: '72%', label: 'of SMBs say ad costs rose year over year' },
+              {
+                num: 'Matt Stoller',
+                label: 'Leading anti-trust expert · featured in the report',
+                eyebrow: 'Exclusive interview',
+                small: true,
+              },
+            ] as { num: string; label: string; eyebrow?: string; small?: boolean }[]).map((s) => (
+              <div key={s.label} className="bg-[#0A0A0A] p-8">
+                {s.eyebrow && (
+                  <div className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: ACCENT }}>
+                    {s.eyebrow}
+                  </div>
+                )}
+                <div
+                  className="font-bold tracking-tight text-white"
+                  style={{
+                    fontFamily: 'var(--font-headline)',
+                    fontSize: s.small ? 'clamp(1.5rem,4vw,2.25rem)' : 'clamp(2rem,6vw,3.25rem)',
+                  }}
+                >
+                  {s.num}
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-[#B0B0B0]">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
       {/* ===== WHAT WE'RE BUILDING ===== */}
       <section id="building" className="px-6 py-28 lg:px-8">
         <motion.div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2 lg:items-center lg:gap-16" {...reveal}>

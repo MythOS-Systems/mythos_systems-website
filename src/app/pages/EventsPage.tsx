@@ -17,13 +17,13 @@ const GRAIN =
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
- * Upcoming events for the strip + calendar. Only San Diego Launch Week has a
+ * Upcoming events for the strip + calendar. Only DFW Launch Week has a
  * locked date for now; the rest are "Date TBA" until confirmed. Month is
  * 0-indexed when a date is set.
  */
 const EVENTS: MythosEvent[] = [
   { id: 1, name: 'Fight for Local', city: 'Dallas / Fort Worth', tag: 'Fight night + hackathon', featured: true },
-  { id: 2, date: new Date(2026, 7, 1), name: 'San Diego Launch Week', city: 'San Diego', tag: 'Launch' },
+  { id: 2, date: new Date(2026, 9, 1), name: 'DFW Launch Week', city: 'Dallas / Fort Worth', tag: 'Launch' },
   { id: 3, name: 'Creator & Community Night', city: 'Multiple cities', tag: 'Community' },
   { id: 4, name: 'Fight for Local: Next City', city: 'Nationwide', tag: 'Fight night' },
 ];

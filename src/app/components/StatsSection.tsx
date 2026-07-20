@@ -9,9 +9,9 @@ export function StatsSection() {
       gradient: 'from-[#000000] to-[#1A1A1A]',
     },
     {
-      number: '60%',
-      description: 'of San Diego jobs are at small businesses - yet they pay 38% less than big companies',
-      source: 'San Diego Regional EDC, 2024',
+      number: '44%',
+      description: 'of Texas workers are employed by small businesses, which make up 99.8% of all Texas companies - yet they\'re outspent by billion-dollar chains',
+      source: 'SBA Texas Small Business Profile, 2025',
       gradient: 'from-[#1A1A1A] to-[#000000]',
     },
     {

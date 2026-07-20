@@ -117,7 +117,7 @@ export function EarlyAccessModal({ isOpen, onClose }: EarlyAccessModalProps) {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full px-4 py-3 bg-[#1A1A1A] border border-white/20 rounded text-white placeholder-[#666666] focus:outline-none focus:border-[#0047FF] focus:ring-1 focus:ring-[#0047FF] transition-colors"
-                    placeholder="San Diego"
+                    placeholder="Dallas"
                   />
                 </div>
 

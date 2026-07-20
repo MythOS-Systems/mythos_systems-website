@@ -15,7 +15,7 @@ A bold, rebellious website showcasing MythOS Systems' mission to build hyperloca
 ## 🚀 Products
 
 ### The Network
-Free hyperlocal discovery app launching in San Diego (March 14, 2026)
+Free hyperlocal discovery app launching in Dallas / Fort Worth (October 1, 2026)
 
 ### MythOS Pro  
 AI-powered business automation at $100/month
@@ -56,7 +56,7 @@ src/
 │       ├── ProductsPage.tsx
 │       ├── PartnerPage.tsx
 │       ├── AboutUsPage.tsx
-│       ├── SanDiegoPage.tsx
+│       ├── SanDiegoPage.tsx      # retained but hidden (SD launch paused; see App.tsx)
 │       └── DFWPage.tsx
 ├── styles/
 │   ├── index.css
@@ -72,13 +72,12 @@ src/
 - **Responsive Design**: Mobile-optimized with proper touch interactions
 - **Partner Integration**: 4 partner types with Supabase backend
 - **Modal System**: Early access, affiliate, BID/chamber, investor deck, job applications
-- **City Pages**: San Diego and DFW-specific landing pages
+- **City Pages**: DFW-specific landing page (San Diego page retained in code but hidden)
 - **Investor Portal**: Deck access and investment information
 
 ## 🌐 Launch Timeline
 
-- **San Diego go-live**: March 14, 2026
-- **DFW expansion**: Q2 2026
+- **Dallas / Fort Worth go-live**: October 1, 2026
 
 ## 📄 License
 

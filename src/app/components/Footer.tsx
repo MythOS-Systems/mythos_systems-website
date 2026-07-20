@@ -21,7 +21,6 @@ export function Footer() {
         { label: 'Events', page: 'events' },
         { label: 'Become a Partner', page: 'partner' },
         { label: 'Join the Rebellion', page: 'home' },
-        { label: 'San Diego Launch', page: 'sandiego' },
         { label: 'DFW Launch', page: 'dfw' },
       ],
     },

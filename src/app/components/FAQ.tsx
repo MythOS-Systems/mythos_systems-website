@@ -121,11 +121,11 @@ export function FAQ() {
       items: [
         {
           question: 'When are you launching?',
-          answer: 'San Diego launches August 2026. We\'re also building in Dallas / Fort Worth, and we\'ll scale to more cities from there.',
+          answer: 'Dallas / Fort Worth launches October 1, 2026. From there we\'ll scale to more cities.',
         },
         {
           question: 'What cities will you be in?',
-          answer: 'San Diego (August 2026) and Dallas / Fort Worth to start. After that, we\'re expanding based on where local businesses need us most. Want us in your city? Let us know.',
+          answer: 'Dallas / Fort Worth first, launching October 1, 2026. After that, we\'re expanding based on where local businesses need us most. Want us in your city? Let us know.',
         },
         {
           question: 'Can I use this outside your launch cities?',

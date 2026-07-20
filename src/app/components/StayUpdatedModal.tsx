@@ -43,7 +43,7 @@ export function StayUpdatedModal({ isOpen, onClose }: StayUpdatedModalProps) {
             Stay Updated
           </h2>
           <p className="text-[#B0B0B0] text-lg">
-            Follow us on social media for the latest updates on the San Diego launch
+            Follow us on social media for the latest updates on the DFW launch
           </p>
         </div>
 

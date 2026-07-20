@@ -5,7 +5,9 @@ import { ForBusinessesPage } from './pages/ForBusinessesPage';
 import { ManifestoPage } from './pages/ManifestoPage';
 import { InvestorPage } from './components/InvestorPage';
 import { FAQ } from './components/FAQ';
-import { SanDiegoPage } from './pages/SanDiegoPage';
+// SanDiegoPage is intentionally hidden (SD launch paused in favor of DFW). The
+// page file is kept on disk so we can re-enable the route when SD is next up.
+// import { SanDiegoPage } from './pages/SanDiegoPage';
 import { DFWPage } from './pages/DFWPage';
 import { PartnerPage } from './pages/PartnerPage';
 import { EventsPage } from './pages/EventsPage';
@@ -18,7 +20,6 @@ type PageType =
   | 'manifesto'
   | 'investors'
   | 'faq'
-  | 'sandiego'
   | 'dfw'
   | 'partner'
   | 'events'
@@ -32,7 +33,6 @@ const PATH_FOR: Record<PageType, string> = {
   manifesto: '/manifesto',
   investors: '/investors',
   faq: '/faq',
-  sandiego: '/san-diego',
   dfw: '/dfw',
   partner: '/partner',
   events: '/events',
@@ -79,10 +79,6 @@ const ROUTE_META: Record<PageType, { title: string; description: string }> = {
   faq: {
     title: 'FAQ | MythOS',
     description: 'Answers about MythOS, MythOS Pro, The Network, and how we fight for local.',
-  },
-  sandiego: {
-    title: 'San Diego | MythOS',
-    description: 'MythOS in San Diego: rebuilding local economies, one city at a time.',
   },
   dfw: {
     title: 'Dallas / Fort Worth | MythOS',
@@ -175,8 +171,6 @@ export default function App() {
       return <InvestorPage />;
     case 'faq':
       return <FAQ />;
-    case 'sandiego':
-      return <SanDiegoPage />;
     case 'dfw':
       return <DFWPage />;
     case 'partner':
