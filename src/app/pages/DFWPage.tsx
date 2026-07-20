@@ -166,7 +166,7 @@ export function DFWPage() {
               $100/month
             </div>
             <p className="text-xl text-white font-semibold mb-2">
-              No contracts. No corporate BS.
+              No contracts.
             </p>
             <p className="text-[#B0B0B0] text-lg">
               Just the power you need to compete.

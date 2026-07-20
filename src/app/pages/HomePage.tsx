@@ -41,12 +41,12 @@ export function HomePage() {
           </motion.div>
         </div>
       </section>
-      <SanDiegoSection />
-      <StatsSection />
       {/* Testing the cinematic section in place of HowItWorks. Revert: swap back to <HowItWorks /> */}
       <div className="overflow-x-hidden">
         <CinematicHero />
       </div>
+      <SanDiegoSection />
+      <StatsSection />
       <PricingSection />
       <FinalCTA />
       <Footer />

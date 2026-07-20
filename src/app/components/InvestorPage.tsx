@@ -256,6 +256,59 @@ export function InvestorPage() {
         </div>
       </section>
 
+      {/* ===== 4. BIG TECH TAX REPORT ===== */}
+      <section className="border-b border-white/10 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <Reveal>
+            <Eyebrow color="#FF4500">
+              <span className="text-white">Research project</span> · in partnership with UT Dallas
+            </Eyebrow>
+            <h2 className="mythos-headline-large max-w-3xl text-white">
+              How much is <span className="text-[#FF4500]">Big Tech</span> costing your business?
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg text-[#B0B0B0]">
+              We're quantifying the "Visibility Tax" - what local businesses are forced to spend just to be found
+              online - straight from the source.
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-3">
+            {([
+              { num: '$238B', label: 'Google ad revenue in 2023 alone' },
+              { num: '72%', label: 'of SMBs say ad costs rose year over year' },
+              {
+                num: 'Matt Stoller',
+                label: 'Leading anti-trust expert · featured in the report',
+                eyebrow: 'EXCLUSIVE INTERVIEW',
+                small: true,
+              },
+            ] as { num: string; label: string; eyebrow?: string; small?: boolean }[]).map((s, i) => (
+              <Reveal key={s.label} delay={i * 0.08}>
+                <div className="rounded-xl border border-white/10 bg-[#111] p-6">
+                  {s.eyebrow && (
+                    <div className="mb-2 text-xs font-semibold tracking-[0.15em] text-[#FF4500]">
+                      {s.eyebrow}
+                    </div>
+                  )}
+                  <div
+                    className="mythos-stat-number bg-gradient-to-b from-white to-[#8cb4d8] bg-clip-text text-transparent"
+                    style={s.small ? { fontSize: 'clamp(1.75rem, 4vw, 2.75rem)' } : undefined}
+                  >
+                    {s.num}
+                  </div>
+                  <p className="mt-2 text-sm text-[#B0B0B0]">{s.label}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal>
+            <p className="mt-6 text-sm text-[#707070]">
+              The full report drops soon - watch for it in the press.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ===== 6. THE ASK ===== */}
       <section className="border-b border-white/10 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">

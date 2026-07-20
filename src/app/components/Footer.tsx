@@ -12,7 +12,6 @@ export function Footer() {
       links: [
         { label: 'Products', page: 'products' },
         { label: 'For Businesses', page: 'business' },
-        { label: 'Manifesto', page: 'manifesto' },
       ],
     },
     {
