@@ -413,7 +413,7 @@ export function FinalCTA() {
           </p>
           
           <p className="text-sm md:text-base text-white/70">
-            The countdown is to <span className="text-white font-semibold">The Network</span> - our local discovery app - launching October 1, 2026.
+            The countdown is to <span className="text-white font-semibold">The Network</span> - our local discovery app - and <span className="text-white font-semibold">MythOS Pro</span>, both launching October 1, 2026.
           </p>
         </div>
       </div>
