@@ -134,7 +134,7 @@ const MythosHero = () => {
                   style={{ color: "#F5F5F0", fontFamily: "var(--font-headline)" }}
                 >
                   <span className="block leading-[0.82] text-[15vw] sm:text-[12vw] md:text-[10vw] lg:text-[8.5vw] xl:text-[8vw]">
-                    RReconnect
+                    Reconnect
                   </span>
                   <span className="block leading-[0.95] [text-align-last:justify] text-[10vw] sm:text-[8vw] md:text-[6.7vw] lg:text-[5.9vw] xl:text-[5.7vw]">
                     with your city
