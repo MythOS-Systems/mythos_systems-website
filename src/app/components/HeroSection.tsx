@@ -54,7 +54,7 @@ export function HeroSection() {
         {/* Content */}
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="mythos-headline-massive text-white mb-6">
-            Reconnect With Your City
+            RReconnect With Your City
           </h1>
           
           <p className="mythos-body-large text-[#B0B0B0] max-w-3xl mx-auto mb-12">
