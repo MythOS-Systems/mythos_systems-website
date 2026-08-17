@@ -23,43 +23,6 @@ export function SanDiegoSection() {
           </p>
         </motion.div>
 
-        {/* Network Illustration Image with Tilt Effect */}
-        <motion.div
-          className="relative w-full max-w-6xl mx-auto"
-          initial={{ opacity: 0, y: 50, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <Tilt
-            rotationFactor={6}
-            isRevese
-            style={{
-              transformOrigin: 'center center',
-            }}
-            springOptions={{
-              stiffness: 26.7,
-              damping: 4.1,
-              mass: 0.2,
-            }}
-            className="group relative rounded-lg"
-          >
-            <Spotlight
-              className="z-10 from-[#0047FF]/50 via-[#9D4EDD]/30 to-[#FF4500]/20 blur-3xl"
-              size={400}
-              springOptions={{
-                stiffness: 26.7,
-                damping: 4.1,
-                mass: 0.2,
-              }}
-            />
-            <img 
-              src={networkImage} 
-              alt="MythOS network infrastructure diagram showing connections between local businesses, shared infrastructure, and community"
-              className="w-full h-auto rounded-lg"
-            />
-          </Tilt>
-        </motion.div>
       </div>
     </section>
   );
