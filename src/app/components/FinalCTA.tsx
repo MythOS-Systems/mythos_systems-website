@@ -9,7 +9,7 @@ export function FinalCTA() {
   });
 
   useEffect(() => {
-    const launchDate = new Date('2026-10-01T00:00:00').getTime();
+    const launchDate = new Date('2026-11-01T00:00:00').getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -413,7 +413,7 @@ export function FinalCTA() {
           </p>
           
           <p className="text-sm md:text-base text-white/70">
-            The countdown is to <span className="text-white font-semibold">The Network</span> - our local discovery app - and <span className="text-white font-semibold">MythOS Pro</span>, both launching October 1, 2026.
+            The countdown is to <span className="text-white font-semibold">The Network</span> - our local discovery app - and <span className="text-white font-semibold">MythOS Pro</span>, both launching November 1, 2026.
           </p>
         </div>
       </div>
