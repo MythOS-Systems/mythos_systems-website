@@ -96,7 +96,7 @@ export function FAQ() {
       items: [
         {
           question: 'What is MythOS Pro?',
-          answer: 'AI-powered business automation from $50/month. It includes Mylo, our AI assistant that handles reception, booking, customer service, and operations - giving you the power of an entire team.',
+          answer: 'AI-powered business automation for $100/month. It includes Mylo, our AI assistant that handles reception, booking, customer service, and operations - giving you the power of an entire team.',
         },
         {
           question: 'What can Mylo actually do?',
@@ -104,11 +104,7 @@ export function FAQ() {
         },
         {
           question: 'How much does it cost?',
-          answer: 'Three plans: Starter at $50/month for getting started, Business at $100/month for running the business, and Scale at $200/month for heavy use and bigger teams. No hidden fees, no contracts. Cancel anytime.',
-        },
-        {
-          question: 'What is Mylo Energy, and how much do I get?',
-          answer: 'Energy is what Mylo uses to do work. Every plan includes it each month: Starter covers about 100 tasks, Business about 250, and Scale about 500. A task is Mylo doing something for you, like writing and sending an email, booking a customer, adding a product, or editing your website. Quick questions cost far less. If you need more, Energy Packs start at $20.',
+          answer: '$100/month. No hidden fees, no enterprise upsells, no contracts. Cancel anytime.',
         },
         {
           question: 'What integrations do you support?',

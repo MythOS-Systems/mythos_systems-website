@@ -30,7 +30,7 @@ export function PricingSection() {
       id: 'pro' as const,
       name: 'MythOS Pro',
       title: 'Let Mylo Work for You',
-      price: 'From $50',
+      price: '$100',
       period: ' / month',
       subtitleBadge: 'For Small Businesses',
       color: '#FF4500',
@@ -62,34 +62,6 @@ export function PricingSection() {
       ],
       cta: 'Get Early Access',
       featured: false,
-    },
-  ];
-
-  // The three Workspace plans. Every plan includes Mylo Energy each month; the plain
-  // words and the "about N tasks" line are what tell a business which one fits. A task
-  // is Mylo doing a real piece of work, roughly 100 to 300 Energy; quick questions cost
-  // far less. These match the plan picker in the app.
-  const plans = [
-    {
-      name: 'Starter',
-      price: '$50',
-      tagline: 'Getting started',
-      blurb: 'Mylo for a few things a day.',
-      tasks: 'About 100 tasks a month',
-    },
-    {
-      name: 'Business',
-      price: '$100',
-      tagline: 'Running the business',
-      blurb: 'Mylo all day, for you or a small team.',
-      tasks: 'About 250 tasks a month',
-    },
-    {
-      name: 'Scale',
-      price: '$200',
-      tagline: 'Taking it further',
-      blurb: 'Heavy use, a bigger team, Always On, voice and video.',
-      tasks: 'About 500 tasks a month',
     },
   ];
 
@@ -192,45 +164,6 @@ export function PricingSection() {
                     </li>
                   ))}
                 </ul>
-
-                {/* MythOS Pro plans */}
-                {tier.id === 'pro' && (
-                  <div className="mb-8 pt-6 border-t" style={{ borderColor: `${tier.color}30` }}>
-                    <h4
-                      className="text-lg font-bold mb-3"
-                      style={{ color: tier.color, fontFamily: 'var(--font-headline)' }}
-                    >
-                      Pick Your Plan
-                    </h4>
-                    <ul className="space-y-3">
-                      {plans.map((plan) => (
-                        <li
-                          key={plan.name}
-                          className="rounded-md p-3"
-                          style={{ backgroundColor: `${tier.color}10` }}
-                        >
-                          <div className="flex items-baseline justify-between gap-3">
-                            <span className="text-white font-semibold">
-                              {plan.name}
-                              <span className="text-[#B0B0B0] text-xs font-normal ml-2">{plan.tagline}</span>
-                            </span>
-                            <span className="text-white font-semibold whitespace-nowrap">
-                              {plan.price}
-                              <span className="text-[#B0B0B0] text-xs font-normal"> / mo</span>
-                            </span>
-                          </div>
-                          <p className="text-[#B0B0B0] text-sm mt-1">{plan.blurb}</p>
-                          <p className="text-xs mt-1" style={{ color: tier.color }}>{plan.tasks}</p>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="text-[#B0B0B0] text-xs leading-relaxed mt-3">
-                      A task is Mylo doing something for you: writing and sending an email, booking a
-                      customer, adding a product, editing your site. Quick questions cost far less.
-                      Need more? Energy Packs start at $20.
-                    </p>
-                  </div>
-                )}
 
                 {/* MythOS Pro additional info */}
                 {tier.id === 'pro' && (
